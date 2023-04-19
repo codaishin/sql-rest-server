@@ -1,8 +1,10 @@
 {
+	"editor.rulers": [80],
 	"files.insertFinalNewline": true,
 	"files.trimTrailingWhitespace": true,
 	"editor.tabSize": 2,
 	"editor.insertSpaces": false,
+	"editor.formatOnSave": true,
 	"[python]": {
 		"editor.tabSize": 4,
 		"editor.insertSpaces": true
@@ -14,5 +16,6 @@
 	"python.linting.enabled": true,
 	"python.linting.pylintEnabled": true,
 	"python.linting.mypyEnabled": true,
-	"python.formatting.provider": "black"
+	"python.formatting.provider": "black",
+	"python.formatting.blackArgs": ["--line-length", "80"]
 }
