@@ -1,6 +1,7 @@
 """API"""
+
 import sqlite3
-from typing import Iterable
+from typing import Any, Callable, Coroutine, Iterable
 
 from fastapi import FastAPI
 from pydantic import BaseModel
@@ -55,3 +56,30 @@ async def people_modeled() -> Iterable[dict]:
         {"uid": uid, "first_name": first_name, "last_name": last_name}
         for (uid, first_name, last_name) in get_people()
     )
+
+
+def get_people_factory(
+    get_people_fn: Callable[[], list[tuple[int, str, str]]]
+) -> Callable[[], Coroutine[Any, Any, Iterable[dict]]]:
+    """produce a function that utilizes `get_people_fn`"""
+
+    async def run() -> Iterable[dict]:
+        """Get all people from the database
+
+        fastapi's documentation/validation will validate the
+        list of `dict`s to be in line with a list of `Person` elements
+        """
+
+        return [
+            {"uid": uid, "first_name": first_name, "last_name": last_name}
+            for (uid, first_name, last_name) in get_people_fn()
+        ]
+
+    return run
+
+
+people_tdd = get_people_factory(get_people)
+
+app.get("/people-tdd", response_model=list[Person])(
+    people_tdd,
+)
